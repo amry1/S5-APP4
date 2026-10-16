@@ -20,12 +20,6 @@ def abberation():
     plt.imshow(image_filtrer, cmap='gray')
     plt.show()
 
-
-import matplotlib
-import matplotlib.pyplot as plt
-import numpy as np
-
-
 def rotation_mat():
     matplotlib.pyplot.gray()
     img_couleur = matplotlib.image.imread('images/goldhill_rotate.png')
