@@ -8,7 +8,7 @@ from matplotlib import patches
 from matplotlib.figure import Figure
 from matplotlib import rcParams
 
-def abberation():
+def aberration():
     image = np.load('images/goldhill_aberrations.npy')
     a = np.poly([0.9*np.exp((1j*(np.pi/2))),0.9*np.exp((-1j*(np.pi/2))), 0.95*np.exp((1j*(np.pi/8))), 0.95*np.exp((-1j*(np.pi/8)))])
     b = np.poly([0, -0.99, -0.99, 0.8])
@@ -104,5 +104,5 @@ def zplane(b, a, filename=None):
     return z, p, k
 
 
-abberation()
+aberration()
 rotation_mat()
