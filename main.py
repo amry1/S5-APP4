@@ -91,6 +91,13 @@ def RII():
     print("b_1: ", b_1)
     print("a_1: ", a_1)
 
+    image = np.load('images/goldhill_bruit.npy')
+    image_filtrer = signal.lfilter(b, a, image)
+    plt.imshow(image, cmap='gray')
+    plt.show()
+    plt.imshow(image_filtrer, cmap='gray')
+    plt.show()
+
 
 
 
