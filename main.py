@@ -19,6 +19,7 @@ def aberration():
     plt.show()
     plt.imshow(image_filtrer, cmap='gray')
     plt.show()
+    return image_filtrer
 
 def rotation_mat():
     matplotlib.pyplot.gray()
@@ -99,6 +100,36 @@ def RII():
     plt.show()
 
 
+def compression():
+
+    I_o = aberration()
+
+    C_xx = np.cov(I_o, rowvar=False)
+
+
+    valeurs_propres, vecteurs_propres = np.linalg.eigh(C_xx)
+    indices_tries = np.argsort(valeurs_propres)[::-1]
+    vecteurs_propres_tries = vecteurs_propres[:, indices_tries]
+
+
+    P_vo = vecteurs_propres_tries.T
+
+    I_v = P_vo @ I_o
+    
+    hauteur = I_v.shape[0]
+    ratio_compr = 0.2
+    retrait_ligne = int(hauteur * ratio_compr)
+
+    I_v_comp = I_v.copy()
+    I_v_comp[-retrait_ligne:, :] = 0    
+
+    P_ov = np.linalg.inv(P_vo)
+    img_reconstruite = P_ov @ I_v_comp
+    
+    plt.imshow(img_reconstruite, cmap='gray')
+    plt.show()
+
+
 
 
 def zplane(b, a, filename=None):
@@ -166,3 +197,4 @@ def zplane(b, a, filename=None):
 #rotation_mat()
 #rotation_mat2()
 RII()
+compression()
