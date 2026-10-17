@@ -42,6 +42,57 @@ def rotation_mat():
     plt.imshow(image_rot, cmap='gray')
     plt.show()
 
+def rotation_mat2():
+    matplotlib.pyplot.gray()
+    img_couleur = matplotlib.image.imread('images/goldhill_rotate.png')
+    image = np.mean(img_couleur, -1)
+
+    plt.imshow(image, cmap='gray')
+
+    hauteur, largeur = image.shape
+
+    image_rot = np.zeros([largeur, hauteur])
+
+    for x in range(largeur):
+            for y in range(hauteur):
+                dep_x = hauteur-1 -y
+                dep_y = x
+    
+                image_rot[dep_y, dep_x] = image[y, x]
+    
+    plt.imshow(image_rot, cmap='gray')
+    plt.show()
+
+
+def RII():
+    w_a = 4789.14
+    f_e = 1600
+
+    b = [w_a**2, 2*w_a**2, w_a**2]
+    a = [w_a**2 + 4*f_e**2 + np.sqrt(2)*2*f_e*w_a, 
+         -8*f_e**2 + 2*w_a**2, 
+         4*f_e**2 - np.sqrt(2)*2*f_e*w_a + w_a**2]
+
+    a_0 = a[0]
+    b_norm = [coef / a_0 for coef in b]
+    a_norm = [coef / a_0 for coef in a]
+
+    print("--- Méthode Manuelle Normalisée ---")
+    print("b_norm: ", b_norm)
+    print("a_norm: ", a_norm)
+
+    print("\n--- Méthode Python ---")
+    order = 2
+    f_c = 500
+    nyq = 0.5 * f_e
+    w_n = f_c / nyq
+
+    b_1, a_1 = signal.butter(order, w_n, 'low', analog=False)
+    print("b_1: ", b_1)
+    print("a_1: ", a_1)
+
+
+
 
 def zplane(b, a, filename=None):
     """Plot the complex z-plane given a transfer function.
@@ -104,5 +155,7 @@ def zplane(b, a, filename=None):
     return z, p, k
 
 
-aberration()
-rotation_mat()
+#aberration()
+#rotation_mat()
+#rotation_mat2()
+RII()
