@@ -52,15 +52,35 @@ def rotation_mat2():
 
     hauteur, largeur = image.shape
 
+    angle = np.pi/2
+    matrix_pass = [
+        [np.cos(angle), np.sin(angle)],
+        [-np.sin(angle), np.cos(angle)]
+    ]
+
+    new_hauteur = largeur
+    new_largeur = hauteur
     image_rot = np.zeros([largeur, hauteur])
 
     for x in range(largeur):
-            for y in range(hauteur):
-                dep_x = hauteur-1 -y
-                dep_y = x
-    
-                image_rot[dep_y, dep_x] = image[y, x]
-    
+        for y in range(hauteur):
+            x_e = x - (largeur - 1)
+            y_e = (hauteur - 1) - y
+            pos_mat = np.array([x_e, y_e])
+
+            new_coords = matrix_pass @ pos_mat
+            x_u = new_coords[0]
+            y_u = new_coords[1]
+
+            new_x = int(np.round(x_u))
+            new_y = int(np.round((new_hauteur - 1) - y_u))
+
+            if 0 <= new_x < new_largeur and 0 <= new_y < new_hauteur:
+                image_rot[new_y, new_x] = image[y, x]
+
+
+    plt.imshow(image, cmap='gray')
+    plt.show()
     plt.imshow(image_rot, cmap='gray')
     plt.show()
 
@@ -159,33 +179,32 @@ def RII():
 
 def compression():
 
-    I_o = aberration()
+    image_originale = aberration()
 
-    C_xx = np.cov(I_o, rowvar=True)
+    moyenne = np.mean(image_originale, axis=1, keepdims=True)
+    image_centree = image_originale - moyenne
 
+    matrice_cov = np.cov(image_centree, rowvar=True)
 
-    valeurs_propres, vecteurs_propres = np.linalg.eigh(C_xx)
+    valeurs_propres, vecteurs_propres = np.linalg.eigh(matrice_cov)
     indices_tries = np.argsort(valeurs_propres)[::-1]
     vecteurs_propres_tries = vecteurs_propres[:, indices_tries]
 
+    projection = vecteurs_propres_tries.T
+    image_transformee = projection @ image_centree
 
-    P_vo = vecteurs_propres_tries.T
-
-    I_v = P_vo @ I_o
-    
-    hauteur = I_v.shape[0]
-    ratio_compr = 0.7
+    hauteur = image_transformee.shape[0]
+    ratio_compr = 0.2
     retrait_ligne = int(hauteur * ratio_compr)
 
-    I_v_comp = I_v.copy()
-    I_v_comp[-retrait_ligne:, :] = 0    
+    image_compressee = image_transformee.copy()
+    image_compressee[-retrait_ligne:, :] = 0
 
-    P_ov = np.linalg.inv(P_vo)
-    img_reconstruite = P_ov @ I_v_comp
-    
-    plt.imshow(img_reconstruite, cmap='gray')
+    reconstruction = vecteurs_propres_tries
+    img_reconstruite = (reconstruction @ image_compressee) + moyenne
+
+    plt.imshow(img_reconstruite, cmap="gray")
     plt.show()
-
 
 
 
